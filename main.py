@@ -395,6 +395,7 @@ data = {
     'plug' : ['я вас не поняла','перефразируйте пожалуйста','ничего не понятно',
             'давай по новой','мне не понятен ваш запрос','ну непонятно']
 }
+
 days = {
     '01' : 'первое', '02' : 'второе', '03' : 'третье',
     '04' : 'четвёртое', '05' : 'пятое', '06' : 'шестое',
@@ -426,24 +427,27 @@ minuts = ['ноль','одна', 'две', 'три', 'четыре', 'пять',
 minuts2 = ['двадцать', 'тридцать', 'сорок', 'пятьдесят']
 
 # code for voice assistent Kira
-import difflib
-import requests
-from random import choice
-from gtts import gTTS
-import playsound
-from datetime import datetime
-import speech_recognition as sr
-import os
-import pickle
+import difflib # Модуль для сравнивания двух строк
+from random import choice # Модуль для выбора случайного элемента из списка
+from gtts import gTTS # Модуль для создания аудио файла с голосом
+import playsound # Модуль для воспроизведения аудио файла с голосом 
+from datetime import datetime # Модуль для работы с датой и временем
+import speech_recognition as sr # Модуль для преобразования звука с микрофона в голос
+import os # Модуль для работы с файловой системой
+import pickle # Модуль для загрузки моделей ML
+import requests # Модуль для обработки URL
+from bs4 import BeautifulSoup # Модуль для работы с HTML
 
 class Voice_Bot_Kira():
     
     # Конструктор
+    # Constructor
     def __init__(self):
         self.model = pickle.load(open("mode.pickle", "rb")) # Создаем нашу ML
         self.vect = pickle.load(open("modevectorizer.pickle", "rb")) # Создаем векторайзер
 
     # Функция сравнения схожести двух строк 
+    # Function comparing the similarity of two strings
     def similarity(self, s1 : list, s2 : str):
         for i in s1:
             matcher = difflib.SequenceMatcher(None, i, s2)
@@ -452,6 +456,7 @@ class Voice_Bot_Kira():
         return False
 
     # Функция конвертера даты и времени
+    # Date and time converter function
     def konvert_date(self, day_, time_):
         day = days[day_[2]]
         mon = mons[day_[1]]
@@ -484,20 +489,67 @@ class Voice_Bot_Kira():
         return f'{day} {mon} {year} {hour} {minut}'
 
     # Функция выхода из программы
+    # Function exit program
     def exit_program(self):
-        print(choice(bot['greetings.bye']))
+        self.say_message(choice(bot['greetings.bye']))
         exit()
 
     # Функция парсинг сайта
-    def get_sait():
+    # Function parsing site
+    def get_sait(self):
         pass
     
     # Функция получение курса валют (доллара, и евро)
-    def get_rate():
-        pass
+    # Function for obtaining the exchange rate (dollar and euro)
+    def get_rate(self):
+        # Парсим всю страницу
+        DOLLAR_RUB = 'https://www.banki.ru/products/currency/usd/'#'https://www.google.com/search?sxsrf=ALeKk01NWm6viYijAo3HXYOEQUyDEDtFEw%3A1584716087546&source=hp&ei=N9l0XtDXHs716QTcuaXoAg&q=%D0%B4%D0%BE%D0%BB%D0%BB%D0%B0%D1%80+%D0%BA+%D1%80%D1%83%D0%B1%D0%BB%D1%8E&oq=%D0%B4%D0%BE%D0%BB%D0%BB%D0%B0%D1%80+&gs_l=psy-ab.3.0.35i39i70i258j0i131l4j0j0i131l4.3044.4178..5294...1.0..0.83.544.7......0....1..gws-wiz.......35i39.5QL6Ev1Kfk4'
+        EUR_RUB = 'https://www.banki.ru/products/currency/eur/'#'https://www.google.com/search?q=%D0%BA%D1%83%D1%80%D1%81+%D0%B5%D0%B2%D1%80%D0%BE+%D0%BA+%D1%80%D1%83%D0%B1%D0%BB%D1%8E&oq=%D0%BA%D1%83%D1%80%D1%81+%D0%B5%D0%B2%D1%80%D0%BE+%D0%BA+&aqs=chrome.1.69i57j0i433l2j0l4j69i61.17879j1j4&sourceid=chrome&ie=UTF-8'
+        # Заголовки для передачи вместе с URL
+        
+        full_page = requests.get(DOLLAR_RUB)
+        full1_page = requests.get(EUR_RUB)
+        # Разбираем через BeautifulSoup
+        soup = BeautifulSoup(full_page.text, 'lxml')
+        soup1 = BeautifulSoup(full1_page.text, 'lxml')
+
+        # Получаем нужное для нас значение и возвращаем его
+        convert = soup.find_all("div", class_="currency-table__large-text")
+        convert1 = soup1.find_all("div", class_="currency-table__large-text")
+
+        return f'курс доллара {convert[0].text} курс евро {convert1[0].text}'
     
-    def get_news():
-        pass
+    # Функция получение новостей с сайта
+    # Function for obtaining news with sait
+    def get_news(self):
+        textarea = ''
+        url = 'https://ria.ru/lenta/'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'lxml')
+        quotes = soup.find_all('a', class_='list-item__title color-font-hover-only')
+
+        tag = []
+        
+        for i in quotes:
+            tag.append([i.text, 'https://ria.ru' + i.get('href')])
+        
+        for i, j in tag:
+            #self.say_message(i)
+            print(i)
+            s = input('y/n: ')
+            if s =='y':
+                response = requests.get(j)
+                soup = BeautifulSoup(response.text, 'lxml')
+                quotes = soup.find_all('div', class_="article__text")
+                for i in quotes:
+                    textarea += i.text
+
+                textarea = textarea.split('.')
+                for i in textarea:
+                    if i:
+                        self.say_message(i)
+
+        return ''
     
     def plug(self, replic):
 
@@ -543,21 +595,25 @@ class Voice_Bot_Kira():
         return choice(bot[class_r])
 
     def listen_command(self):
+        # Обработка аудио с микрофона
         # obtain audio from the microphone
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Скажите вашу команду: ")
             audio = r.listen(source)
 
+        # Обработка речи используя Google Speech Recognition
         # recognize speech using Google Speech Recognition
         try:
             our_speech = r.recognize_google(audio, language="ru")
             print("Вы сказали: " + our_speech)
             return our_speech
+
         except sr.UnknownValueError:
-            return "ошибка"
+            listen_command()
+
         except sr.RequestError:
-            return "ошибка"
+            listen_command()
 
     def say_message(self, message):
         voice = gTTS(message, lang="ru")
@@ -567,8 +623,6 @@ class Voice_Bot_Kira():
         os.remove(file_voice_name)
         print("Голосовой ассистент: " + message)
 
-    def test_ML():
-        pass
 
     def run():
         pass
