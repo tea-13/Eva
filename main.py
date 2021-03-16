@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Dict for bot with answer to questions 
 
 bot = {
@@ -437,14 +439,154 @@ import os # Модуль для работы с файловой системо�
 import pickle # Модуль для загрузки моделей ML
 import requests # Модуль для обработки URL
 from bs4 import BeautifulSoup # Модуль для работы с HTML
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Voice_Bot_Kira():
-    
-    # Конструктор
-    # Constructor
+
+class Ui_MainWindow(object):
+    bool_news = False
+    news_p = []
+    nam_b = 'Bot_Kira'
+
     def __init__(self):
         self.model = pickle.load(open("mode.pickle", "rb")) # Создаем нашу ML
         self.vect = pickle.load(open("modevectorizer.pickle", "rb")) # Создаем векторайзер
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(548, 657)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.frame.setGeometry(QtCore.QRect(0, 0, 551, 661))
+        self.frame.setStyleSheet("QFrame{\n"
+"    border-radius: 7px;\n"
+"    background-color: #1B1D23;\n"
+"}")
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.lineEdit = QtWidgets.QLineEdit(self.frame)
+        self.lineEdit.setGeometry(QtCore.QRect(10, 470, 531, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(14)
+        font.setBold(False)
+        font.setWeight(50)
+        self.lineEdit.setFont(font)
+        self.lineEdit.setStyleSheet("QLineEdit{\n"
+"    border-radius: 7px;\n"
+"}")
+        self.lineEdit.setText("")
+        self.lineEdit.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.lineEdit.setPlaceholderText("")
+        self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit.setObjectName("lineEdit")
+        self.ent = QtWidgets.QPushButton(self.frame)
+        self.ent.setGeometry(QtCore.QRect(280, 520, 261, 41))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.ent.setFont(font)
+        self.ent.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ent.setStyleSheet("QPushButton{\n"
+"    color: white;\n"
+"    border-radius: 7px;\n"
+"    background-color: #595F76;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: #50566E;\n"
+"}\n"
+"\n"
+"QPushButton:pressed{\n"
+"    background-color: #434965;\n"
+"}")
+        self.ent.setObjectName("ent")
+        self.voi = QtWidgets.QPushButton(self.frame)
+        self.voi.setGeometry(QtCore.QRect(10, 520, 261, 41))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.voi.setFont(font)
+        self.voi.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.voi.setStyleSheet("QPushButton{\n"
+"    color: white;\n"
+"    border-radius: 7px;\n"
+"    background-color: #595F76;\n"
+"}\n"
+"\n"
+"QPushButton:hover{\n"
+"    background-color: #50566E;\n"
+"}\n"
+"\n"
+"QPushButton:pressed{\n"
+"    background-color: #434965;\n"
+"}")
+        self.voi.setObjectName("voi")
+        self.label = QtWidgets.QLabel(self.frame)
+        self.label.setGeometry(QtCore.QRect(10, 570, 531, 41))
+        self.label.setStyleSheet("QLabel{\n"
+"    color: white;\n"
+"    border-radius: 7px;\n"
+"    background-color: #595F76;\n"
+"}\n"
+"")
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.textBrowser = QtWidgets.QTextBrowser(self.frame)
+        self.textBrowser.setGeometry(QtCore.QRect(10, 10, 531, 451))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(14)
+        self.textBrowser.setFont(font)
+        self.textBrowser.setStyleSheet("color: white;\n"
+"border-radius: 7px;\n"
+"background-color: #2C313C;\n"
+"")
+        self.textBrowser.setObjectName("textBrowser")
+        self.linename = QtWidgets.QLineEdit(self.frame)
+        self.linename.setGeometry(QtCore.QRect(230, 620, 211, 31))
+        self.linename.setText('UserNane')
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(14)
+        self.linename.setFont(font)
+        self.linename.setStyleSheet("QLineEdit{\n"
+"    border-radius: 7px;\n"
+"}")
+        self.linename.setObjectName("linename")
+        self.label_2 = QtWidgets.QLabel(self.frame)
+        self.label_2.setGeometry(QtCore.QRect(70, 620, 151, 31))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.label_2.setFont(font)
+        self.label_2.setStyleSheet("QLabel{\n"
+"    color: white;\n"
+"    border-radius: 7px;\n"
+"    background-color: #595F76;\n"
+"}\n"
+"")
+        self.label_2.setObjectName("label_2")
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.ent.setText(_translate("MainWindow", "Отправить"))
+        self.voi.setText(_translate("MainWindow", "Голос"))
+        self.textBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Arial\'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "  Введите свое имя:"))
+
+        self.ent.clicked.connect(self.sub)
 
     # Функция сравнения схожести двух строк 
     # Function comparing the similarity of two strings
@@ -491,7 +633,9 @@ class Voice_Bot_Kira():
     # Функция выхода из программы
     # Function exit program
     def exit_program(self):
-        self.say_message(choice(bot['greetings.bye']))
+        rep = choice(bot['greetings.bye'])
+        self.textBrowser.append(rep)
+        self.say_message(rep)
         exit()
 
     # Функция парсинг сайта
@@ -519,37 +663,29 @@ class Voice_Bot_Kira():
 
         return f'курс доллара {convert[0].text} курс евро {convert1[0].text}'
     
-    # Функция получение новостей с сайта
-    # Function for obtaining news with sait
     def get_news(self):
-        textarea = ''
+        self.news_p.clear()
         url = 'https://ria.ru/lenta/'
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'lxml')
         quotes = soup.find_all('a', class_='list-item__title color-font-hover-only')
-
-        tag = []
         
         for i in quotes:
-            tag.append([i.text, 'https://ria.ru' + i.get('href')])
-        
-        for i, j in tag:
-            #self.say_message(i)
-            print(i)
-            s = input('y/n: ')
-            if s =='y':
-                response = requests.get(j)
-                soup = BeautifulSoup(response.text, 'lxml')
-                quotes = soup.find_all('div', class_="article__text")
-                for i in quotes:
-                    textarea += i.text
+            self.news_p.append([i.text, 'https://ria.ru' + i.get('href')])
 
-                textarea = textarea.split('.')
-                for i in textarea:
-                    if i:
-                        self.say_message(i)
+    def pars_news(self, link_):    
+        textarea = ''
+        response = requests.get(link_)
+        soup = BeautifulSoup(response.text, 'lxml')
+        quotes = soup.find_all('div', class_="article__text")
+        for i in quotes:
+            textarea += i.text
 
-        return ''
+        textarea = textarea.split('.')
+        for rep in textarea:
+            if rep:
+                self.textBrowser.append(f'{self.nam_b}\n{rep}\n')
+                self.say_message(rep) 
     
     def plug(self, replic):
 
@@ -564,9 +700,6 @@ class Voice_Bot_Kira():
 
         elif self.similarity(data['rate'], replic):
             return self.get_rate()
-
-        elif self.similarity(data['news'], replic):
-            return self.get_news()
 
         elif self.similarity(data['func'], replic):
             pass
@@ -624,11 +757,44 @@ class Voice_Bot_Kira():
         print("Голосовой ассистент: " + message)
 
 
-    def run():
-        pass
+    def bot_ans(self, rep):
+        count = 1
 
-if __name__ == '__main__':
-    Kira = Voice_Bot_Kira()
-    while True:
-        rep = Kira.clasific_LR(input('Please enter your fraze for LR: '))
-        Kira.say_message(rep)
+        if self.similarity(data['news'], rep):
+            self.textBrowser.append(f'{self.nam_b}\n')
+            self.get_news()
+            for i, j in self.news_p:
+                self.textBrowser.append(f'{count}) {i}')
+                count += 1
+            self.bool_news = True
+        else:
+            rep = self.clasific_LR(rep)
+            self.textBrowser.append(f'{self.nam_b}\n{rep}\n')
+            self.say_message(rep)
+
+    def sub(self):
+        nam = self.linename.text()
+        if self.bool_news:
+            num_articl = self.lineEdit.text()
+            if num_articl == 'выход':
+                self.bool_news = False
+            elif self.bool_news:
+                num_articl = int(num_articl) - 1
+                self.pars_news(self.news_p[num_articl][1])
+                self.bool_news = False
+        else:
+            rep = self.lineEdit.text()
+            if nam and rep:
+                self.textBrowser.append(f'{nam}\n{rep}\n')
+                self.lineEdit.clear()
+                self.bot_ans(rep)
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
