@@ -610,10 +610,10 @@ class Voice_Bot_Kira():
             return our_speech
 
         except sr.UnknownValueError:
-            listen_command()
+            return 'Error'
 
         except sr.RequestError:
-            listen_command()
+            return 'Error'
 
     def say_message(self, message):
         voice = gTTS(message, lang="ru")
