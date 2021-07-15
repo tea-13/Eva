@@ -39,7 +39,7 @@ class VoiceBotClass():
 		return False
 
 	def command(self):
-		if fail_pack > 4:
+		if self.fail_pack > 4:
 			rep = choice(config.fraze['plug'])
 			
 			if self.DEBUG:
@@ -69,7 +69,7 @@ class VoiceBotClass():
 
 			self.log(replica)
 
-			fail_pack = 0
+			self.fail_pack = 0
 			return replica
 		# Если не смогли распознать текст, то будет вызвана эта ошибка
 		except sr.UnknownValueError:
